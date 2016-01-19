@@ -1,0 +1,13 @@
+name = PHP Coder
+description = An Example Module to illustrate how to code Drush Commands. Moreover, this module exists to show how Drush is a great, interactive mechanism within which to write PHP Code that will not necessarily used as Drush Commands.
+; only for drush for now, in fact a problem that engendered work within drush
+; (extended description) Also, the SQL will purposely be written with an
+; individual line for each Entity Lable that will be UPDATED -- this is for
+; five reasons: 1) it is parallel to how SQL composes its DUMP file 2) it is more immediately readable without a highly complicated WHERE clause 3) it allows the SQL Admin to test line-by-line if she wishes, or 10 at a time, or 100 or... 4) personally, it seems easier to run SQL in a remote database than to try to make something that runs on a server (explain better) 5) the generated SQL is very useful as documentation of the bulk operation that this is (for those of us that are documentation nerds)
+package = QIQgroup Tools
+core = 7.x
+files[] = php_coder.module
+
+
+
+; Additional Notes
