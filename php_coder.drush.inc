@@ -73,29 +73,45 @@ function drush_php_coder($area = FALSE) {
   // $area = $area;//KLUDGE
   $supported_option_array = array(
     'action',
-    'hello',
-    'lorem',
-    'echo_options',
+    'who',
+    'vocab',
+    'alt_echo',
+    'rand',
+    'indent',
+    'dev',
+    );
+  $supported_boolean_options_array = array(
     'rand',
     'indent',
     'dev',
     );
   foreach ($supported_option_array as $index => $option) {
     $option = strtolower($option);//maybe enforce case sensitivity
-    $$option = drush_get_option($option, NULL);
-    $key = $option == 'action'?'':'option_';
-    $key .= str_replace('-', '_', $option);
-    $additional_option_array[$key] = $$option;
+    $$option = drush_get_option($option, 777);
+    if ($$option == 777) {
+      if (in_array($option, $supported_boolean_options_array)) {
+        $$option = 1;
+      }
+      $$option = $option != 'action'?$$option:NULL;
+    }
+    if ($$option != 777) {
+      $key = $option == 'action'?'':'option_';
+      $key .= str_replace('-', '_', $option);
+      $additional_option_array[$key] = $$option;
+    }
   }
   /**
    * @todo validate, unpack here? I think in object method
    * @circleback remove application of empty $$option to $additional_option_array
    */
+  // drush_print($area);
+  // return;
   _drush_execute_phpc($area, $action, $additional_option_array);
   // _drush_execute_phpc($area, $action);
 } //END function drush_php_coder($area = FALSE)
 
 function _area_options(){
-  $area_options[] = 'hello';
+  $area_options['hello'] = "Obligatory 'Hello World!' code. Use '--who==' option to swap out 'World'.";
+  $area_options['lorem'] = "General Lorem Ipsum string. Use '--vocab==' option for non-latin vocabularies.";
   return $area_options;
 }

@@ -3,7 +3,7 @@
 class php_coder_object
 {
     var $action;
-    var $bundle;
+    var $area;
     var $entity;
     var $option_array = array();
     var $option_limit;
@@ -14,6 +14,7 @@ class php_coder_object
     var $option_dev;
     var $feedback;
     var $entity_array = array();
+    var $area_array = array();
     var $bundle_array = array();
     var $entity_id_array = array();
     var $ael_config; //= array();
@@ -38,11 +39,11 @@ class php_coder_object
     var $space = "zSPACEz";
     var $temp_output;
 
-    public function  __construct($bundle, $action, $additional_option_array)
+    public function  __construct($area, $action, $additional_option_array)
     {
-        //__construct($action = 'compose', $bundle, $additional_option_array = array())
+        //__construct($action = 'compose', $area, $additional_option_array = array())
         $this->action = $action;
-        $this->bundle = $bundle;
+        $this->area = $area;
         $this->option_array = $additional_option_array;
     }
 
@@ -61,6 +62,11 @@ class php_coder_object
             return;
         }
         $this->unpack_all_entities_method();
+        if (1 == 1 && $this->output_message_type != 'success') {
+            $this->gather_output($dev);
+            return;
+        }
+        $this->unpack_area();
         if (1 == 1 && $this->output_message_type != 'success') {
             $this->gather_output($dev);
             return;
@@ -124,7 +130,7 @@ class php_coder_object
     {
         $action = $this->action;
         if (empty($action)) {
-            $action = 'compose';
+            $action = 'world';
         }
         $supported = array('compose', 'preview', 'mask');
         if (!in_array($action, $supported)) {
@@ -184,13 +190,37 @@ class php_coder_object
 
     {
         // $variable_name = 'entityreference:base-tables';
-        // $variable_default = 'MISSING:' . $this->entity . '_' . $this->bundle;
+        // $variable_default = 'MISSING:' . $this->entity . '_' . $this->area;
         $this->entity_array = unpack_all_entities();
+    }
+
+    public function unpack_area()
+    {
+        // $entity_area_array = field_info_areas();
+        $entity_area_array = array('hello'=>array('world'));
+        $i = 1;
+        foreach ($entity_area_array as $entity => $area_array) {
+            foreach ($area_array as $area => $value_array) {
+                // $this->temp_output[$entity][$area] = $i;
+                $result[$area] = $entity;
+                $i++;
+            }
+        }
+        $this->entity = $result[$this->area];
+        $this->area_array = $result;
+        $supported = array_keys($result);
+        if (1 == 2 && !in_array($this->area, $supported)) {
+            $this->output_message = "\"{$this->area}\" is NOT a supported area.";
+            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
+        }
+        return;
+
     }
 
     public function unpack_bundle()
     {
         $entity_bundle_array = field_info_bundles();
+        $this->bundle = 'article';
         $i = 1;
         foreach ($entity_bundle_array as $entity => $bundle_array) {
             foreach ($bundle_array as $bundle => $value_array) {
@@ -212,6 +242,9 @@ class php_coder_object
 
     public function unpack_ael_config ()
     {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
         return;
         $ael_var_string = 'auto_entitylabel';
         $config_string = $ael_var_string . '_' . $this->entity . '_' . $this->bundle;
@@ -236,6 +269,10 @@ class php_coder_object
 
     public function unpack_mask_pattern ()
     {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
+        return;
         $crlf = $this->crlf;
         $pattern = $this->ael_config_pattern;
         $pattern = str_replace('|', 'zPIPEz', $pattern);
@@ -274,6 +311,10 @@ class php_coder_object
     }
 
     public function unpack_mask_config () {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
+        return;
         $config_array = $this->mask_config_array;
         foreach ($config_array as $index => $string) {
             $config_singleton = unpack_mask_config_singleton($string, $index);
@@ -286,6 +327,10 @@ class php_coder_object
 
     public function unpack_mask_fields ()
     {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
+        return;
         /**
          * @circleback - all steps regarding php are left for later
          */
@@ -343,6 +388,10 @@ class php_coder_object
 
     public function unpack_mask_field_direct ($config)
     {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
+        return;
         $entity = $this->entity_array[$config['entity']];
         $field_sql = $entity['alias'] . '.' . $config['field'];
         return $field_sql;
@@ -350,6 +399,10 @@ class php_coder_object
 
     public function unpack_mask_field_reference ($config)
     {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
+        return;
         /**
          * @todo determine whether part of base entity table or bundle field
          */
@@ -432,6 +485,10 @@ class php_coder_object
 
     public function unpack_update_sql_smarty()
     {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
+        return;
         if ($this->indent === true) {
             $crlf = $this->crlf;
             $tab = $this->tab;
@@ -497,6 +554,10 @@ class php_coder_object
 
     public function unpack_entity_id_array()
     {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
+        return;
         if ($this->action == 'mask') {
             return;
         }
@@ -540,6 +601,10 @@ class php_coder_object
 
     public function validate_options()
     {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
+        return;
         if ($this->action == 'mask') {
             return;
         }
@@ -649,6 +714,10 @@ class php_coder_object
 
     public function unpack_update_sql_rendered()
     {
+        /**
+         * @circleback = just return, rewrite or delete
+         */
+        return;
         #\_ well, render
         if ($this->action == 'mask') {
             $this->update_sql_rendered = $this->update_sql_smarty;
@@ -672,6 +741,10 @@ class php_coder_object
         $space = " "; //$this->space;
 
         $dev = $this->option_dev === TRUE?TRUE:$dev;
+        /**
+         * @circleback = truly evaluate $dev
+         */
+        $dev = true;
 
         $attribute_array = array();
         $leading_output_string = "=====================================";
@@ -728,7 +801,8 @@ class php_coder_object
 
         $this->output_string = "=====================================";
         $attribute_array = array(
-         'action',
+        'area',
+        'action',
         'bundle',
         'entity',
         'option_array',
