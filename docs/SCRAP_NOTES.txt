@@ -1,0 +1,31 @@
+REMOVE FROM ANY OFFICIAL DEPLOYMENTS
+
+hello
+generate 'Hello World!'
+- see glueCode (that I was going to use for Drupal Camp 2015)
+--dev output hello_world_object
+--punct= if value _is_ punctuation, swap it for exclamation.
+--greeting= if value is in supported greetings use it
+--who= swap out for 'World'
+--case= if supported (or alias) then change the case of the --who (only)
+v1.0 is basic
+v1.1 is all above
+
+DSM natural next step for Hello World -- that is, simple PHP vs Drupal Developer Tools
+
+lorem
+generate a Lorem Ipsum block
+default = 1 paragraph 4 sentences
+--para= number of para (limit 5 since it's a demo)
+--sentmax= maximum number of sentences per paragraph
+--sentmin= minimum number of sentences per paragraph
+\_ will validate that max >= min
+--vernacular= (BETTER WORD) (see fun sites) bacon, corporate etc
+
+nodeplode
+--count= number of nodes
+\_ default is 1
+--sort= supported sort criteria (title_asc, title_desc, nid_asc, nid_desc, rand, type[bundle]_asc, type[bundle]_desc)
+\_ default is nid_asc
+\_ Validate on count <= all nodes
+

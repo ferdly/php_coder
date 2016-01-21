@@ -1,0 +1,7 @@
+Below are the Steps (as git Versions)
+
+v1: Init (no function, no options)
+v2: Hello World (hello)
+v3: Drupal Set-Message (drdsm)
+v4: Lorem Ipsum Generator (lorem)
+v5: Node-Explode (nodeplode)
