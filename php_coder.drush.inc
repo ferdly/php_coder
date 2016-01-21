@@ -43,27 +43,14 @@ function drush_php_coder($area = FALSE) {
 
   // Check for correct argument
   $correct_args = array_keys($options);
-  // $correct_args_count = count($correct_args);
-  // $first_args = $correct_args;
-  // $last_arg = array_pop($first_args);
-  // $first_args_list = implode(",", $first_args);
-  // $first_args_list = str_replace(",", "', '", $first_args_list);
-  // $zero = 'Please ask for assistance, there are currently no auto_entitylabel configurations in use';
-  // $non_zero = 'Please select';
-  // $grammar = $correct_args_count > 2?' among: ':': ';
-  // $grammar = $correct_args_count == 2?' between: ':$grammar;
-  // $list = '';
-  // $list = $correct_args_count == 1?$last_arg:$list;
-  // $list = $correct_args_count > 1?$first_args_list. ' and ' . $last_arg:$list;
-  // if ($correct_args_count == 0) {
-  //   $string = $zero;
-  // }else{
-  //   $string = $non_zero . $grammar . $list . '. (Or supply no area and select from prompted values.)';
-  // }
   if (!in_array($area, $correct_args)) {
     $string = _area_options('string');
-    // return drush_set_error(dt('"@type" is not a valid code type. Please choose between "success" and "error".', array('@type' => $area)));
-    return drush_set_error(dt('"@type" is not a valid area. @string', array('@type' => $area,'@string' => $string)));
+    /**
+     * @circleback = how to escape quotes within dt?
+     * it's really wrong to circumvent dt() like this
+     */
+    return drush_set_error(dt('"@type" is not a valid area. ',
+      array('@type' => $area)) . $string);
   }
 
   // Option
@@ -112,6 +99,7 @@ function drush_php_coder($area = FALSE) {
 } //END function drush_php_coder($area = FALSE)
 
 function _area_options($which = 'array'){
+  $area_options = array();
   $area_options['hello'] = "Obligatory 'Hello World!' code. Use '--who==' option to swap out 'World'.";
   $area_options['lorem'] = "General Lorem Ipsum string. Use '--vocab==' option for non-latin vocabularies.";
   $area_options['pending'] = "Pending Area.";
@@ -123,18 +111,13 @@ function _area_options($which = 'array'){
       $correct_args = array_keys($area_options);
       $correct_args_count = count($correct_args);
       $first_args = $correct_args;
-      $last_arg = array_pop($first_args);
+      $last_arg = '"' .  array_pop($first_args) . '"';
       $first_args_list = implode(",", $first_args);
-      $first_args_list = str_replace(",", ", ", $first_args_list);
-      /**
-       * @circleback = just add space above, work with below later
-       *
-       */
-      // $first_args_list = str_replace(",", "', '", $first_args_list);
-      $zero = 'Please ask for assistance, there are currently no auto_entitylabel configurations in use';
+      $first_args_list = '"' . str_replace(",", '", "', $first_args_list) . '"';
+      $zero = 'Please ask for assistance, there are currently no php_coder areas in use';
       $non_zero = 'Please select';
-      $grammar = $correct_args_count > 2?' among: ':': ';
-      $grammar = $correct_args_count == 2?' between: ':$grammar;
+      $grammar = $correct_args_count > 2?' among ':': ';
+      $grammar = $correct_args_count == 2?' between ':$grammar;
       $list = '';
       $list = $correct_args_count == 1?$last_arg:$list;
       $list = $correct_args_count > 1?$first_args_list. ' and ' . $last_arg:$list;
@@ -148,6 +131,7 @@ function _area_options($which = 'array'){
 
     default:
       return $area_options;
+      #\_ OOAAOC notwithstanding default $which, this is its raison detre
       break;
   }
   return; //OOAAOC
