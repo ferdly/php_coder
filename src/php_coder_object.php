@@ -2,33 +2,15 @@
 
 class php_coder_object
 {
-    var $action;
-    var $area;
-    var $entity;
+    var $example;
+    var $example_object;
     var $option_array = array();
-    var $option_limit;
-    var $option_limit_page;
-    var $option_limit_idlist;
-    var $option_rand = false;
-    var $option_indent;
-    var $option_dev;
-    var $feedback;
+    var $option_select = FALSE;
+    var $option_rand = FALSE;
+    var $option_dev = FALSE;
     var $entity_array = array();
-    var $area_array = array();
     var $bundle_array = array();
     var $entity_id_array = array();
-    var $ael_config; //= array();
-    var $ael_config_pattern; //= array();
-    var $ael_config_php; //= array();
-    var $nid_array = array();
-    var $mask;
-    var $mask_config_array = array();
-    var $mask_field_array = array();
-    var $mask_join_array = array();
-    var $mask_sql_smarty;
-    var $mask_rendered = array();
-    var $update_sql_smarty;
-    var $update_sql_rendered = array();
     var $output_string = 'OUTPUT PENDING OR ERROR';//'';
     var $output_message = 'OUTPUT MESSAGE PENDING OR ERROR';//'';
     var $output_message_type = 'success';//assume the best
@@ -39,11 +21,9 @@ class php_coder_object
     var $space = "zSPACEz";
     var $temp_output;
 
-    public function  __construct($area, $action, $additional_option_array)
+    public function  __construct($example, $additional_option_array)
     {
-        //__construct($action = 'compose', $area, $additional_option_array = array())
-        $this->action = $action;
-        $this->area = $area;
+        $this->example = $example;
         $this->option_array = $additional_option_array;
     }
 
@@ -51,7 +31,7 @@ class php_coder_object
     {
 
         $dev = TRUE;
-        $this->unpack_action();
+        $this->instantiate_example_object();
         if (1 == 1 && $this->output_message_type != 'success') {
             $this->gather_output($dev);
             return;
@@ -66,47 +46,7 @@ class php_coder_object
             $this->gather_output($dev);
             return;
         }
-        $this->unpack_area();
-        if (1 == 1 && $this->output_message_type != 'success') {
-            $this->gather_output($dev);
-            return;
-        }
         $this->unpack_bundle();
-        if (1 == 1 && $this->output_message_type != 'success') {
-            $this->gather_output($dev);
-            return;
-        }
-        $this->unpack_ael_config();
-        if (1 == 1 && $this->output_message_type != 'success') {
-            $this->gather_output($dev);
-            return;
-        }
-        $this->unpack_mask_pattern();
-        if (1 == 1 && $this->output_message_type != 'success') {
-            $this->gather_output($dev);
-            return;
-        }
-        $this->unpack_mask_php();
-        if (1 == 1 && $this->output_message_type != 'success') {
-            $this->gather_output($dev);
-            return;
-        }
-        $this->unpack_mask_config();
-        if (1 == 1 && $this->output_message_type != 'success') {
-            $this->gather_output($dev);
-            return;
-        }
-        $this->unpack_mask_fields();
-        if (1 == 1 && $this->output_message_type != 'success') {
-            $this->gather_output($dev);
-            return;
-        }
-        $this->unpack_update_sql_smarty();
-        if (1 == 1 && $this->output_message_type != 'success') {
-            $this->gather_output($dev);
-            return;
-        }
-        $this->unpack_entity_id_array();
         if (1 == 1 && $this->output_message_type != 'success') {
             $this->gather_output($dev);
             return;
@@ -116,60 +56,56 @@ class php_coder_object
             $this->gather_output($dev);
             return;
         }
-        $this->unpack_update_sql_rendered();
+        $this->unpack_example();
         if (1 == 1 && $this->output_message_type != 'success') {
             $this->gather_output($dev);
             return;
         }
         $this->gather_output();
-        // $this->gather_output($dev);//only as a last gasp to see data
+        // $this->gather_output($dev);//or implement --dev=1 option
         return;
     }
 
-    public function unpack_action()
+    public function instantiate_example_object()
     {
-        $action = $this->action;
-        if (empty($action)) {
-            $action = 'world';
+        $example = $this->example;
+        if (empty($example)) {
+            $example = 'hello';//more codey way to set default
+            $this->example = $example;
         }
-        $supported = array('compose', 'preview', 'mask');
-        if (!in_array($action, $supported)) {
-            $this->supported_action_array = $supported; // dynamic overload for print_r() purposes
-            $this->output_message = "\"$action\" is NOT a supported action.";
-            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
+        switch ($example) {
+            case 'hello':
+                require_once 'hello_object.php';
+                $example_object = new hello_object($this->option_array);
+                $this->example_object = $example_object;
+                break;
+
+            default:
+                $this->supported_example_array = array('hello'); // dynamic overload for print_r() purposes
+                $this->output_message = "\"$example\" is NOT a supported example.";
+                $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
+                break;
         }
-        $this->action = $action;
         return;
     }
     public function unpack_options()
     {
-        $action = $this->action;
         $option_array = $this->option_array;
 
-        $option_limit = empty($option_array['option_limit'])?0:$option_array['option_limit'] + 0;
-
-        $option_limit_page = empty($option_array['option_limit_page'])?0:$option_array['option_limit_page'] + 0;
-
-        $option_limit_idlist = empty($option_array['option_limit_idlist'])?'':$option_array['option_limit_idlist'];
-        $option_limit_idlist = str_replace(' ', '', $option_limit_idlist);
-        $option_limit_idlist = str_replace('"', '', $option_limit_idlist);
-        $option_limit_idlist = str_replace("'", '', $option_limit_idlist);
-        $option_limit_idlist_array = explode(',', $option_limit_idlist);
-        if (count($option_limit_idlist_array) == 1 && empty($option_limit_idlist[0])) {
-            $option_limit_idlist_array = array();
-        }
 
         $true_values_array = array('true', 'yes', 'on', '1',);
-        $false_values_array = array('false', 'no', 'off', '0');
+        $false_values_array = array('false', 'no', 'off', '0',);
+        #\_ consider dyslexic 'on' vs 'no' problem
 
-        $option_rand = $option_array['option_rand'] === 'option_rand'?true:false;
-        $option_rand = in_array($option_array['option_rand'],$true_values_array)?true:$option_rand;
-        // $option_rand = $option_rand === true?'TTRUE':'FFALSE';
+        $option_rand_passed = strtolower($option_array['option_rand']);
+        $option_rand = NULL;
+        $option_rand = in_array($option_rand_passed, $true_values_array)?TRUE:$option_rand;
+        $option_rand = in_array($option_rand_passed, $false_values_array)?FALSE:$option_rand;
 
-        $option_indent_passed = strtolower($option_array['option_indent']);
-        $option_indent = NULL;
-        $option_indent = in_array($option_indent_passed, $true_values_array)?TRUE:$option_indent;
-        $option_indent = in_array($option_indent_passed, $false_values_array)?FALSE:$option_indent;
+        $option_select_passed = strtolower($option_array['option_select']);
+        $option_select = NULL;
+        $option_select = in_array($option_select_passed, $true_values_array)?TRUE:$option_select;
+        $option_select = in_array($option_select_passed, $false_values_array)?FALSE:$option_select;
 
         $option_dev_passed = strtolower($option_array['option_dev']);
         $option_dev = NULL;
@@ -177,11 +113,8 @@ class php_coder_object
         $option_dev = in_array($option_dev_passed, $false_values_array)?FALSE:$option_dev;
 
 
-        $this->option_limit = $option_limit;
-        $this->option_limit_page = $option_limit_page;
-        $this->option_limit_idlist = $option_limit_idlist_array;
+        $this->option_select = $option_select;
         $this->option_rand = $option_rand;
-        $this->option_indent = $option_indent;
         $this->option_dev = $option_dev;
 
     }
@@ -192,29 +125,6 @@ class php_coder_object
         // $variable_name = 'entityreference:base-tables';
         // $variable_default = 'MISSING:' . $this->entity . '_' . $this->area;
         $this->entity_array = unpack_all_entities();
-    }
-
-    public function unpack_area()
-    {
-        // $entity_area_array = field_info_areas();
-        $entity_area_array = array('hello'=>array('world'));
-        $i = 1;
-        foreach ($entity_area_array as $entity => $area_array) {
-            foreach ($area_array as $area => $value_array) {
-                // $this->temp_output[$entity][$area] = $i;
-                $result[$area] = $entity;
-                $i++;
-            }
-        }
-        $this->entity = $result[$this->area];
-        $this->area_array = $result;
-        $supported = array_keys($result);
-        if (1 == 2 && !in_array($this->area, $supported)) {
-            $this->output_message = "\"{$this->area}\" is NOT a supported area.";
-            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        return;
-
     }
 
     public function unpack_bundle()
@@ -240,289 +150,26 @@ class php_coder_object
 
     }
 
-    public function unpack_ael_config ()
+    public function unpack_example()
     {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        $ael_var_string = 'auto_entitylabel';
-        $config_string = $ael_var_string . '_' . $this->entity . '_' . $this->bundle;
-        $config_pattern_string = $ael_var_string . '_pattern_' . $this->entity . '_' . $this->bundle;
-        $config_php_string = $ael_var_string . '_php_' . $this->entity . '_' . $this->bundle;
-
-        $variable_default = 'MISSING:' . $this->entity . '_' . $this->bundle;
-        $this->ael_config = variable_get($config_string, $variable_default);
-        $this->ael_config_pattern = variable_get($config_pattern_string, $variable_default);
-        $this->ael_config_php = variable_get($config_php_string, $variable_default);
-        $entity_bundle = $this->entity . '_' . $this->bundle;
-        if ($this->ael_config != 1) {
-            $this->output_message = "\"$entity_bundle\" is NOT active for AEL.";
-            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
+        $example = $this->example;
+        if (empty($example)) {
+            $example = 'EERROR';//this is an error
         }
-        if ($this->ael_config_php != 0) {
-            $this->output_message = "\"$entity_bundle\" PHP is NOT yet supported by AEL_BackLog.";
-            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        return;
-    }
-
-    public function unpack_mask_pattern ()
-    {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        $crlf = $this->crlf;
-        $pattern = $this->ael_config_pattern;
-        $pattern = str_replace('|', 'zPIPEz', $pattern);
-        $pattern = str_replace(' ', 'zSPACEz', $pattern);
-        $pattern = str_replace('[', '|[', str_replace(']', ']|', $pattern));
-        $pattern_array = explode('|', $pattern);
-        foreach ($pattern_array as $index => $chunk) {
-            $bracket_count = substr_count ( $chunk , '[') + substr_count ( $chunk , '[');
-            if ($bracket_count === 2) {
-                $field_array[$index] = $chunk;
-                $join_array[$index] = $chunk;
-            }elseif($bracket_count !== 0){
-                $this->output_message = '"pattern chunk" contains an invalid number of square-bracket characters. Workaround is pending';
-                $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-                // $chunk_sql = $chunk;
-            }else{
-                $chunk = '"' . $chunk. '"';
-                $chunk = str_replace('zSPACEz', ' ', $chunk);
-                $chunk = str_replace('zPIPEz', '|', $chunk);
-            }
-            $pattern_array[$index] = $chunk;
-        }
-        $this->mask = $pattern_array;
-        $this->mask_config_array = $field_array;
-        $this->mask_field_array = $field_array;
-        $this->mask_join_array = $join_array;
-        return;
-    }
-
-    public function unpack_mask_php (){
-        /**
-         * @todo - unsupported at first juncture
-         * @circleback - purposely left for later
-         */
-        return;
-    }
-
-    public function unpack_mask_config () {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        $config_array = $this->mask_config_array;
-        foreach ($config_array as $index => $string) {
-            $config_singleton = unpack_mask_config_singleton($string, $index);
-            unset($this->mask_config_array[$index]);
-            $this->mask_config_array[$index] = $config_singleton;
-        }
-    }
-
-
-
-    public function unpack_mask_fields ()
-    {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        /**
-         * @circleback - all steps regarding php are left for later
-         */
-        if ($this->indent === true) {
-            $crlf = $this->crlf;
-            $tab = $this->tab;
-        }else{
-        $crlf = '';
-        $tab = '';
-        }
-        $space = $this->space;
-        $mask_base_table = $this->entity_array[$this->entity]['table'];
-        $mask_base_alias = $this->entity_array[$this->entity]['alias'];
-        $mask_base_primary = $this->entity_array[$this->entity]['primary'];
-        $mask_base_smarty = '{' . $mask_base_alias . '.' . $mask_base_primary . '}';
-        $field_array = $this->mask_field_array;
-        $i = 0;
-        foreach ($field_array as $index => $chunk) {
-            $config = $this->mask_config_array[$index];
-
-            if (count($config[reference_array]) == 0) {
-                $chunk_sql = $this->unpack_mask_field_direct ($config);
-            }elseif(count($config[reference_array]) == 1)
-            {
-                $chunk_sql = $this->unpack_mask_field_reference ($config);
-            }else
-            {
-                $chunk_sql = 'EERROR';
-                $this->output_message = "\"$action\" is NOT a supported action.";
-                $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-            }
-            unset($this->mask_field_array[$index]);
-            $this->mask_field_array[$index]['string'] = $chunk;
-            $this->mask_field_array[$index]['sql'] = $chunk_sql;
-        }
-        $mask_sql_smarty = '';
-        $concat_string = 'CONCAT( '. $crlf . $tab;
-        $comma_string = '';
-        foreach ($this->mask as $index => $chunk) {
-            $concat_string .= $comma_string;
-           if (!empty($this->mask_field_array[$index]['sql'])) {
-                $concat_string .= $this->mask_field_array[$index]['sql'];
-            }else{
-                $concat_string .= $chunk;
-            }
-            $comma_string = ', ' . $crlf . $tab;
-        }
-        $concat_string .= $crlf . $tab . ')' . $crlf . $tab;
-        $mask_sql_smarty = 'SELECT ' . $crlf . $tab . $concat_string . $space . $crlf . 'FROM ' . $mask_base_table . ' ' . $mask_base_alias . $space . $crlf . 'WHERE ' . $mask_base_alias . '.' . $mask_base_primary . ' = ' . $mask_base_smarty;
-
-
-        $this->mask_sql_smarty = $mask_sql_smarty;
-       return;
-    }
-
-    public function unpack_mask_field_direct ($config)
-    {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        $entity = $this->entity_array[$config['entity']];
-        $field_sql = $entity['alias'] . '.' . $config['field'];
-        return $field_sql;
-    }
-
-    public function unpack_mask_field_reference ($config)
-    {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        /**
-         * @todo determine whether part of base entity table or bundle field
-         */
-        if ($this->indent === true) {
-            $crlf = $this->crlf;
-            $tab = $this->tab;
-        }else{
-        $crlf = '';
-        $tab = '';
-
-        }
-        $space = $this->space;
-        $target_type = $config['reference_array'][0]['data']['target_type'];
-        $target_entity = $this->entity_array[$target_type];
-        $from_bundle = $config['reference_array'][0]['data']['from_bundle'] + 0;
-        if ($from_bundle == 1) {
-            $field = $config['field'];
-            $outer_alias = implode(array_map('upmfr_left_init', explode('_', $field)));
-            $outer_table_name = 'field_data_' . $field;
-            $outer_field_name = $field . '_value';
-            $outer_primary = 'entity_id';
-        }else{
-            $outer_alias = $target_entity['alias'];
-            $outer_table_name = $target_entity['table'];
-            $outer_field_name = $config['field'];
-            $outer_primary = $target_entity['primary'];
-        }
-        $target_table_name = $config['reference_array'][0]['data']['target_table_name'];
-        $target_field_name = $config['reference_array'][0]['data']['target_field_name'];
-        $entity = $this->entity_array[$config['entity']];
-        $target_alias = $config['reference_array'][0]['alias'];
-        $base_entity = $this->entity_array[$config['entity']];
-        $base_smarty = '{' . $base_entity['alias'] . '.' . $base_entity['primary'] . '}';
-        $outer_entity_id_smarty = $outer_alias . '.' . $outer_primary;
-        $target_entity_id_sql = "{$crlf}{$tab}SELECT {$target_alias}.{$target_field_name}{$crlf}{$tab}FROM {$target_table_name} {$target_alias}{$space}{$crlf}{$tab}WHERE {$target_alias}.entity_id = {$base_smarty}{$crlf}{$tab}";
-        $outer_field_sql = "{$crlf}{$tab}SELECT {$outer_alias}.{$outer_field_name}{$crlf}{$tab}FROM {$outer_table_name}{$space}{$outer_alias}{$space}{$crlf}{$tab}WHERE {$outer_alias}.{$outer_primary} = ({inner_sql})";
-        $target_entity_id_sql = $this->utility_ztring_replace($target_entity_id_sql, 3);
-        $field_sql = str_replace('{inner_sql}', $target_entity_id_sql, $outer_field_sql);
-        $field_sql = $this->utility_ztring_replace($field_sql, 2);
-        $field_sql = '(' . $field_sql . $crlf . $tab . ')';
-        return $field_sql;
-    }
-
-    public function unpack_mask_joins ()
-    {
-        /**
-         * @todo build joins rewrite smarty as:
-         *
- UPDATE node n
- SET n.title = (
-   SELECT
-   CONCAT('Week ', w.field_nfl_sequence_value, ' Standing for ', p.name, ' (', n.nid, ')')
-   FROM node_revision nr
-   LEFT JOIN (
-     SELECT
-     wd.entity_id
-     , wd.field_week_target_id
-     , wt.field_nfl_sequence_value
-     FROM field_data_field_week wd
-     LEFT JOIN field_data_field_nfl_sequence wt
-     ON wd.field_week_target_id = wt.entity_id
-   ) w
-   ON w.entity_id = nr.nid
-   LEFT JOIN (
-     SELECT
-     pd.entity_id
-     , pd.field_player_target_id
-     , pt.name
-     FROM field_data_field_player pd
-     LEFT JOIN users pt
-     ON pd.field_player_target_id = pt.uid
-   ) p
-   ON p.entity_id = nr.nid
-   WHERE nr.nid IN (58)
- )
- WHERE n.nid IN (58)
- ;
-         */
-    }
-
-    public function unpack_update_sql_smarty()
-    {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        if ($this->indent === true) {
-            $crlf = $this->crlf;
-            $tab = $this->tab;
-        }else{
-            $crlf = '';
-            $tab = '';
-        }
-        $space = $this->space;
-        $ael_this = 'SET @ael_this = (' . $this->mask_sql_smarty . ');';
-        $entity = $this->entity_array[$this->entity];
-        $table = $entity['table'];
-        $primary = $entity['primary'];
-        $primary_smarty = '{' . $entity['alias'] . '.' . $primary . '}';
-        $alias = $entity['alias'] . $entity['alias'];
-        $ael_this = $this->utility_ztring_replace($ael_this);
-        switch ($this->action) {
-            case 'compose':
-                $update_sql_smarty = "\r\nUPDATE " . $table . ' ' . $alias . ' SET ' . $alias . '.title = (' . '@ael_this' . ') WHERE ' . $alias . '.' . $primary . ' = ' . $primary_smarty . ';';
-                $update_sql_smarty = $ael_this . $space . $crlf . $update_sql_smarty;
-                $update_sql_smarty = $this->utility_ztring_replace($update_sql_smarty);
-                break;
-            case 'preview':
-                $update_sql_smarty = 'SELECT ' . '@ael_this' . ';';
-                $update_sql_smarty = $ael_this . $space . $crlf . $update_sql_smarty;
-                $update_sql_smarty = $this->utility_ztring_replace($update_sql_smarty);
+        switch ($example) {
+            case 'hello':
+                $this->output_string = $this->example_object->compose_sentence();
                 break;
 
             default:
-                #\_ default is 'mask' since upack_action already validated
-                $update_sql_smarty = $ael_this;
+                $this->supported_example_array = array('hello'); // dynamic overload for print_r() purposes
+                $this->output_message = "\"$example\" is NOT a supported example.";
+                $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
                 break;
         }
-        $this->update_sql_smarty = $update_sql_smarty;
+        return;
     }
+
     public function utility_ztring_replace($string, $tab_level = 1) {
         /**
          * Method instead of Function so that $attributes can be consistent
@@ -552,188 +199,12 @@ class php_coder_object
         return $string;
     }
 
-    public function unpack_entity_id_array()
-    {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        if ($this->action == 'mask') {
-            return;
-        }
-        // $entity_id_array = array(58,59,60,61,62,63,64,65,66,67,68,69,70);
-        $entity = $this->entity;
-        $bundle = $this->bundle;
-        $bundle_string = "'" . $bundle . "'";
-        $entity_array = $this->entity_array;
-        $table = $this->entity_array[$entity]['table'];
-        $table_dbtng = '{' . $table . '}';
-        $alias = $this->entity_array[$entity]['alias'];
-        $primary = $this->entity_array[$entity]['primary'];
-        $bundle_fieldname = $this->entity_array[$entity]['bundle_fieldname'];
-        /**
-         * @todo use entity_get_info() in unpack_all_entities (instead of db_query)
-         * * \_ pretty sure this will have it all, need to check though
-         */
-        $query = db_select($table, $alias)
-            ->condition($bundle_fieldname, $bundle_string)
-            ->fields($alias,array($primary));
-        //One way
-        $temp_output = $query->__toString();
-        $entity_id_array = $query->execute()->fetchAll();
-
-        // $sql = "SELECT $primary FROM $table_dbtng WHERE $bundle_fieldname = :bundle";
-        // $fetchAll = 'the thing to get just the array of entity_ids, also use dbtng not SQL above';
-        // $fetchAll_OR_fetchAssoc = db_query($sql,
-        // $temp_query = db_query($sql,
-            // array(':bundle' => $bundle));
-        // $temp_output = $temp_query->__toString();
-
-
-
-
-
-        $this->temp_output = $temp_output;
-        $this->entity_id_array = $entity_id_array;
-
-    }
-
 
     public function validate_options()
     {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        if ($this->action == 'mask') {
-            return;
-        }
-        $option_limit_passed = !isset($this->option_array['option_limit'])?'NNULL':$this->option_array['option_limit'];
-
-        if ($this->option_limit == 0 && $this->action == 'preview') {
-            $this->option_limit = 1; //change default of preview
-        }
-      /**
-       * @todo validate limit-page
-       * maybe reject suppled Zero
-       * * count($entity_id_array) < $limt + $limit * $page is an error
-       * * * this is an extension of existing validation
-       */
-        if ($this->option_rand === TRUE) {
-            shuffle($this->entity_id_array);
-            #\_ this works with 0 (all), and limit (since limit 3 is first 3 shuffledm etc)
-        }
-
-        $option_limit_page = $this->option_limit_page + 0;
-        $option_limit_page_is_positive_integer = $option_limit_page == abs(floor($option_limit_page))?TRUE:FALSE;
-        // $option_limit_page_is_positive_integer = $option_limit_page == 0?FALSE:$option_limit_page_is_positive_integer;
-        if ($option_limit_page_is_positive_integer !== TRUE) {
-            $this->output_message = "The limit-page option must be a Positive Integer.";
-            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-            return;
-        }
-        if ($this->option_rand === TRUE && $option_limit_page !== 0) {
-            $this->output_message = "The limit-page option and the rand option are in conflict.";
-            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-            return;
-        }
-        if (count($option_limit_idlist) > 0 && $option_limit_page !== 0) {
-            $this->output_message = "limit-page and limit_listid are in conflict.";
-            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-            return;
-        }
-        if ($option_limit_page !== 0 && $option_limit_passed === 'NNULL') {
-            $this->output_message = "The limit-page option requires the limit option to be actively set. ";
-            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-            return;
-        }
-
-        $option_limit_idlist = $this->option_limit_idlist;
-        if (count($option_limit_idlist) > 0 && $option_limit_passed !== 'NNULL') {
-            $this->output_message = "limit and option_limit_listid are in conflict.";
-            $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-            return;
-        }
-
-        $entity_id_array = $this->entity_id_array;
-        if (count($option_limit_idlist) > 0) {
-            if($this->option_rand === TRUE) {
-             shuffle($option_limit_idlist);
-             #\_ seems silly, but if one wants to have a semi-constant test idlist and randomize that, that makes sense
-            }
-            $id_of_list_error = FALSE;
-            foreach ($option_limit_idlist as $index => $entity_id ) {
-                if (!in_array($entity_id, $entity_id_array)) {
-                    $id_of_list_error = TRUE;
-                    break;
-                }
-            }
-            if ($id_of_list_error === FALSE) {
-                $this->entity_id_array = $option_limit_idlist;
-                return;
-            }else{
-                $this->output_message = "\"{$entity_id}\" is NOT a valid entity_id (first encountered).";
-                $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-                return;
-            }
-        } //END option_limit_idlist
-        if ($this->option_limit > count($entity_id_array)) {
-                $this->output_message = "limit is NOT less than or equal to all entity ids.";
-                $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-                return;
-        }
-        if ($this->option_limit > 0) {
-            $all_count = count($entity_id_array);
-            $option_limit = $this->option_limit;
-            $page_offset = $this->option_limit_page - 1; //page = 1 has no offset, right; validated above
-            $page_offset = $page_offset < 0?0:$page_offset; //BUT unsupplied or Zero is supported
-            $offset = $option_limit * $page_offset;
-            $all_limit = $offset + $option_limit;
-            if ($all_limit > $all_count) {
-                $this->output_message = "limit_page and limit will exceed bundle count.";
-                $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-                return;
-            }
-            $this->entity_id_array = array_slice($entity_id_array, $offset, $option_limit);
-        }
-
-        $count = count($this->entity_id_array);
-        $default_indent = $count == 1?TRUE:FALSE;
-        $option_indent  = $this->option_indent === TRUE?TRUE:$default_indent;
-        $option_indent  = $this->option_indent === FALSE?FALSE:$option_indent;
-        $this->option_indent = $option_indent;
-
-        /**
-         * evaluates limit, limit_idlist and rand
-         * @todo consider more efficient control structure than IFs
-         * @todo evaluate other options?
-         * @todo fully test every permutation
-         */
         return;
     }
 
-    public function unpack_update_sql_rendered()
-    {
-        /**
-         * @circleback = just return, rewrite or delete
-         */
-        return;
-        #\_ well, render
-        if ($this->action == 'mask') {
-            $this->update_sql_rendered = $this->update_sql_smarty;
-            return;
-        }
-        $entity = $this->entity_array[$this->entity];
-        $smarty_search = '{' . $entity['alias'] . '.' . $entity['primary'] . '}';
-        $update_sql_smarty = $this->update_sql_smarty;
-        $update_sql_rendered = '';
-        foreach ($this->entity_id_array as $index => $entity_id) {
-            $singleton = str_replace($smarty_search, $entity_id, $update_sql_smarty) . "\r\n";//Hard Coded, does NOT depend on $crlf
-            $update_sql_rendered .= $singleton;
-        }
-        $this->update_sql_rendered = $update_sql_rendered;
-        return;
-    }
     public function gather_output ($dev = FALSE)
     {
         $crlf = "\r\n"; //$this->crlf; // use ztring_replace() method of this gets too hairy
@@ -745,105 +216,27 @@ class php_coder_object
          * @circleback = truly evaluate $dev
          */
         $dev = true;
+        $default_output = 'OUTPUT PENDING OR ERROR';
+        if ($this->output_string != $default_output) {
+            if ($dev !== TRUE) {
+                return;
+            }
+        }
 
         $attribute_array = array();
-        $leading_output_string = "=====================================";
-        $trailing_output_string = "\r\n=====================================";
-        #\_ overload either above below
-        switch ($this->action) {
-            case 'compose':
-                $leading_output_string = '/*======= SQL Code Block Start ========*/';
-                $trailing_output_string = $crlf . '/*======== SQL Code Block End =========*/';
-                if ($dev === FALSE) {
-                    $attribute_array[] = 'update_sql_rendered';
-                    $this->output_message = 'Okay, I will compose the SQL';
-                }
-                break;
-            case 'preview':
-                if ($dev === FALSE) {
-                    /**
-                     * @todo render preview with limit up-to 10
-                     * @todo see if preview can be an array, thus SELECT can have many rows -- pretty sure it can be done
-                     */
-                    $attribute_array[] = 'update_sql_rendered';
-                    $this->output_message = 'Okay, I will compose a preview of the SQL and some results';
-                }
-                break;
-            case 'mask':
-                if ($dev === FALSE) {
-                    /**
-                     * @todo work out really how mask is useful?...
-                     */
-                    $attribute_array[] = 'update_sql_rendered';
-                    $this->output_message = 'Okay, I will compose the mask SQL and generate and example';
-                }
-                break;
-
-            default:
-                // $this->output_message = 'The "' . $action . '" action is not supported, something went very wrong. Please asks for assistance.';
-                // $this->output_message_type = 'OOAOC should be caught before output.';
-                break;
-        }
-        $attribute_title_array = array('temp_output'=>'Temporary Output');
-        $att_count = count($attribute_array);
-        if ($att_count > 0) {
-            $this->output_string = '';
-            $this->output_string .= $leading_output_string;
-            $pre_block = $att_count > 0?"\r\n=====\r\n":'';
-            $attribute_title = empty($attribute_title_array[$attribute])?$attribute:$attribute_title_array[$attribute];
-            foreach ($attribute_array as $index => $attribute) {
-                // $this->output_string .= "\r\n=====\r\n" . $attribute . ":";//Maybe Not
-                $this->output_string .= "\r\n" . print_r($this->$attribute, TRUE);
-            } //END foreach()
-            $this->output_string .= $trailing_output_string;
-            return;
-        }
-
-        $this->output_string = "=====================================";
-        $attribute_array = array(
-        'area',
-        'action',
-        'bundle',
-        'entity',
-        'option_array',
-        'option_limit',
-        'option_limit_page',
-        'option_limit_idlist',
-        'option_rand',
-        'option_indent',
-        'option_dev',
-        // 'feedback',
-        'entity_id_array',
-        'entity_array',
-        'bundle_array',
-        // 'ael_config',
-        // 'ael_config_pattern',
-        // 'ael_config_php',
-        // 'nid_array',
-        // 'mask',
-        // 'mask_config_array',
-        // 'mask_field_array',
-        // 'mask_join_array',
-        // 'mask_sql_smarty',
-        // 'mask_rendered',
-        // 'update_sql_smarty',
-        // 'update_sql_rendered',
-        // 'output_string',
-        'output_message',
-        'output_message_type',
-        // 'stack',
-        // 'stack_type',
-        'temp_output',
-        );
+        $prepend_output_string = "=====================================";
+        $postpend_output_string = "\r\n=====================================\r\n";
         if (count($attribute_array) > 0) {
             foreach ($attribute_array as $index => $attribute) {
                 $attribute_title = empty($attribute_title_array[$attribute])?$attribute:$attribute_title_array[$attribute];
-                $this->output_string .= "\r\n=====\r\n" . $attribute_title . ":\r\n" . print_r($this->$attribute, TRUE);
+                if ($attribute != 'output_string') {
+                    $this->output_string .= "\r\n=====\r\n" . $attribute_title . ":\r\n" . print_r($this->$attribute, TRUE);
+                }
             } //END foreach()
         }else{
             $this->output_string .= "\r\n" . print_r($this, TRUE);
         }
-        $this->output_string .= "\r\n=====================================\r\n";
+        // $this->output_string .= "\r\n=====================================\r\n";
 
         return;
     }
@@ -872,84 +265,6 @@ class php_coder_object
         // $return_array['field_table'] = $field_table;
         $return_array['reference_array'] = $reference_array;
         return $return_array;
-    }
-
-    function unpack_reference_singleton($reference, $index, $ref_index)
-    {
-        $reference_array = array();
-        $reference_array['alias'] = 'r' .  $index . '_' . $ref_index;
-        $reference_array['string'] = $reference;
-        $field_name = str_replace('-', '_', $reference);
-        $reference_array['field_name'] = $field_name;
-                /**
-         * @comment in db for table field_config for column field_name: 'The name of this field. Non-deleted field names are unique, but multiple deleted fields can have the same name.'
-         */
-        $config =
-            db_query('SELECT
-                id
-                , field_name
-                , type
-                , module
-                , active
-                , storage_type
-                , storage_module
-                , storage_active
-                , locked
-                , data
-                , cardinality
-                , translatable
-                , deleted
-                FROM {field_config}
-                WHERE field_name = :field_name AND deleted = :deleted',
-                array(':field_name' => $field_name, ':deleted'=> 0))->fetchAssoc();
-        $config_data = unserialize($config['data']);
-        $config_data_limited_array['target_type'] = $config_data['settings']['target_type'];
-        $config_data_limited_array['from_bundle'] = count(@$config_data['settings']['handler_settings']['target_bundles']) > 0?1:0;
-        $limited_table = key($config_data['storage']['details']['sql']['FIELD_LOAD_CURRENT']);
-        $limited_field = $config_data['storage']['details']['sql']['FIELD_LOAD_CURRENT'][$limited_table]['target_id'];
-        $config_data_limited_array['target_table_name'] = $limited_table;
-        $config_data_limited_array['target_field_name'] = $limited_field;
-        $config['data'] = $config_data;
-        // $reference_array['all'] = $config_data;
-        $reference_array['data'] = $config_data_limited_array;
-        if ($config['type'] != 'entityreference') {
-                $output_message = '"field_config[type]" is NOT \'entityreference\'';
-                $output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        elseif ($config['module'] != 'entityreference') {
-                $output_message = '"field_config[module]" is NOT \'entityreference\'';
-                $output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        elseif ($config['storage_type'] != 'field_sql_storage') {
-                $output_message = '"field_config[storage_type]" is NOT \'field_sql_storage\'';
-                $output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        elseif ($config['storage_module'] != 'field_sql_storage') {
-                $output_message = '"field_config[storage_module]" is NOT \'field_sql_storage\'';
-                $output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        elseif ($config['storage_active'] != 1) {
-                $output_message = '"field_config[storage_active]" is NOT \'1\'';
-                $output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        elseif ($config['active'] != 1) {
-                $output_message = '"field_config[active]" is NOT \'1\'';
-                $output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        elseif ($config['cardinality'] != 1) {
-                $output_message = '"field_config[cardinality]" is NOT \'1\'. Cardinality greater than 1 is not supported at this time.';
-                $output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        elseif ($config['deleted'] != 0) {
-                $output_message = '"field_config[deleted]" is NOT \'0\'';
-                $output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
-        }
-        if (!empty($output_message)) {
-            $reference_array['error'] = $output_message;
-            $reference_array['error_debug'] = $output_message_type;
-        }
-
-        return $reference_array;
     }
 
     function unpack_all_entities()
