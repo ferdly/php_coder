@@ -4,9 +4,9 @@
  * Example function.
  */
 
-function _drush_execute_phpc($area = NULL, $action = NULL, $additional_option_array = array()) {
+function _drush_execute_phpc($example = NULL, $additional_option_array = array()) {
     require_once 'src/php_coder_object.php';
-    $phpc_ob = new php_coder_object($area, $action, $additional_option_array);
+    $phpc_ob = new php_coder_object($example, $additional_option_array);
     $phpc_ob->unpack();
     // switch instead of if-else to make more extensible
     switch ($phpc_ob->output_message_type) {

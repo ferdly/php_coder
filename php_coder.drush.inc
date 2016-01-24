@@ -9,15 +9,11 @@ function php_coder_drush_command() {
     'description' => "Description php_coder: \r\nComposes SQL Code to apply Auto-Entry Label Titles to current titles. Useful when there is lots of data already entered before AEL implemented, or when the configuration of EAL is tweaked.",
     'aliases' => array('phpc'), //don't want to collide into others
     'arguments' => array(
-      'area' => "Entity 'Bundle' (for node read 'Content Type'). If not supplied, list of AEL enabled areas are generated to select from.",
+      'example' => "Example name is the argument. If not supplied, list of AEL enabled examples are generated to select from.",
     ),
     'options' => array(
-      'hello' => 'The number of items to execute for the command (smart defaults as per action, and validated).',
-      'lorem' => 'Applies an Offset of limit times lorem. The expectation is that the user leaves limit constant and increments the page, although there is no way to enforce this use (validated).',
-      'echo_options' => 'A Comma Separated Value (csv) list of entity_id values to execute for the command (validated).',
-      'nodeplode' => 'In conjunction with limit or with echo_options or on its own. Randomizes the order of the lines of code Validated.',
-      'vargetter' => 'Smart Defaults, but if you want to overload use yes or no',
-      'action' => 'compose, preview, or mask with compose being the default. This will affect the default of limit.',
+      'rand' => 'Pass to the target Example that all options should be randomized.',
+      'select' => 'Pass to the target Example that, where possible, the user should be prompted to select any options.',
       'dev' => "Allow for skipping over the 'clean' output in favor of 'dev' output as the code progresses. This may be removed or made more useful developers not coding this module.",
     ),
     'examples' => array(
@@ -33,24 +29,28 @@ function php_coder_drush_command() {
 /**
  * Callback for the drush-demo-command command
  */
-function drush_php_coder($area = FALSE) {
+function drush_php_coder($example = FALSE) {
 
   // Check for existence of argument
-    $options = _area_options(); //use custom function to encapsulate
-    if (!$area) {
-        $area = drush_choice($options, dt('For which Bundle would you like to generate \'Auto Enity-Label Back-Log\' SQL Code?'));
+    $options = _example_options(); //use custom function to encapsulate
+    if (!$example) {
+        $example = drush_choice($options, dt('Which Example would you like to interact with using \'PHP-Coder\'?'));
     }
 
   // Check for correct argument
   $correct_args = array_keys($options);
-  if (!in_array($area, $correct_args)) {
-    $string = _area_options('string');
+  if (!in_array($example, $correct_args)) {
+    if ($example == '0') {
+      drush_user_abort('Buh-Bye!');
+      return;
+    }
+    $string = _example_options('string');
     /**
      * @circleback = how to escape quotes within dt?
      * it's really wrong to circumvent dt() like this
      */
-    return drush_set_error(dt('"@type" is not a valid area. ',
-      array('@type' => $area)) . $string);
+    return drush_set_error(dt('"@type" is not a valid example. ',
+      array('@type' => $example)) . $string);
   }
 
   // Option
@@ -58,14 +58,10 @@ function drush_php_coder($area = FALSE) {
   /**
    * @circleback can this be gathered from php_coder_drush_command()
    */
-  // $area = $area;//KLUDGE
+  // $example = $example;//KLUDGE
   $supported_option_array = array(
-    'action',
-    'who',
-    'vocab',
-    'alt_echo',
     'rand',
-    'indent',
+    'select',
     'dev',
     );
   $supported_boolean_options_array = array(
@@ -75,46 +71,44 @@ function drush_php_coder($area = FALSE) {
     );
   foreach ($supported_option_array as $index => $option) {
     $option = strtolower($option);//maybe enforce case sensitivity
-    $$option = drush_get_option($option, 777);
+    $$option = drush_get_option($option, NULL);
     if ($$option == 777) {
+      #\_ wrong-test of how to get default value by calling without '='
       if (in_array($option, $supported_boolean_options_array)) {
         $$option = 1;
       }
-      $$option = $option != 'action'?$$option:NULL;
     }
-    if ($$option != 777) {
-      $key = $option == 'action'?'':'option_';
-      $key .= str_replace('-', '_', $option);
-      $additional_option_array[$key] = $$option;
-    }
+    $key = 'option_';
+    $key .= str_replace('-', '_', $option);
+    $additional_option_array[$key] = $$option;
   }
   /**
    * @todo validate, unpack here? I think in object method
    * @circleback remove application of empty $$option to $additional_option_array
    */
-  // drush_print($area);
+  // drush_print($example);
   // return;
-  _drush_execute_phpc($area, $action, $additional_option_array);
-  // _drush_execute_phpc($area, $action);
-} //END function drush_php_coder($area = FALSE)
+  _drush_execute_phpc($example, $additional_option_array);
+  // _drush_execute_phpc($example, $action);
+} //END function drush_php_coder($example = FALSE)
 
-function _area_options($which = 'array'){
-  $area_options = array();
-  $area_options['hello'] = "Obligatory 'Hello World!' code. Use '--who==' option to swap out 'World'.";
-  $area_options['lorem'] = "General Lorem Ipsum string. Use '--vocab==' option for non-latin vocabularies.";
-  $area_options['pending'] = "Pending Area.";
+function _example_options($which = 'array'){
+  $example_options = array();
+  $example_options['hello'] = "Obligatory 'Hello World!' code. Use '--who==' option to swap out 'World'.";
+  $example_options['lorem'] = "General Lorem Ipsum string. Use '--vocab==' option for non-latin vocabularies.";
+  $example_options['pending'] = "Pending Area.";
   switch ($which) {
     case 'array':
-      return $area_options;
+      return $example_options;
       break;
     case 'string':
-      $correct_args = array_keys($area_options);
+      $correct_args = array_keys($example_options);
       $correct_args_count = count($correct_args);
       $first_args = $correct_args;
       $last_arg = '"' .  array_pop($first_args) . '"';
       $first_args_list = implode(",", $first_args);
       $first_args_list = '"' . str_replace(",", '", "', $first_args_list) . '"';
-      $zero = 'Please ask for assistance, there are currently no php_coder areas in use';
+      $zero = 'Please ask for assistance, there are currently no php_coder examples in use';
       $non_zero = 'Please select';
       $grammar = $correct_args_count > 2?' among ':': ';
       $grammar = $correct_args_count == 2?' between ':$grammar;
@@ -124,13 +118,13 @@ function _area_options($which = 'array'){
       if ($correct_args_count == 0) {
         $string = $zero;
       }else{
-        $string = $non_zero . $grammar . $list . '. (Or supply no area and select from prompted values.)';
+        $string = $non_zero . $grammar . $list . '. (Or supply no example and select from prompted values.)';
       }
       return $string;
       break;
 
     default:
-      return $area_options;
+      return $example_options;
       #\_ OOAAOC notwithstanding default $which, this is its raison detre
       break;
   }
