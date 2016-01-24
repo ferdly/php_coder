@@ -5,14 +5,8 @@
  */
 
 function _drush_execute_phpc($area = NULL, $action = NULL, $additional_option_array = array()) {
-    //_drush_execute_phpc($area = NULL, $action = NULL, $additional_option_array = array())
-    //$limit as zero means all
     require_once 'src/php_coder_object.php';
-    // $phpc_ob = new php_coder_object($command, $area, $additional_option_array);
     $phpc_ob = new php_coder_object($area, $action, $additional_option_array);
-    // $phpc_ob = new php_coder_object($area, $command, $additional_option_array);
-    // $phpc_ob->area = 'Z' . $area;
-    // $phpc_ob->action = 'Z' . $action;
     $phpc_ob->unpack();
     // switch instead of if-else to make more extensible
     switch ($phpc_ob->output_message_type) {
