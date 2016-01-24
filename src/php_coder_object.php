@@ -215,7 +215,7 @@ class php_coder_object
         /**
          * @circleback = truly evaluate $dev
          */
-        $dev = true;
+        // $dev = true;
         $default_output = 'OUTPUT PENDING OR ERROR';
         if ($this->output_string != $default_output) {
             if ($dev !== TRUE) {
