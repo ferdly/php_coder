@@ -9,18 +9,24 @@ class php_coder_object
     var $option_rand = FALSE;
     var $option_dev = FALSE;
     var $output_string = 'OUTPUT PENDING OR ERROR';//'';
-    var $output_message = 'OUTPUT MESSAGE PENDING OR ERROR';//'';
+    var $output_message = 'OUTPUT MESSAGE PENDING OR MOOT';//'';
     var $output_message_type = 'success';//assume the best
+    var $stack_message = array();
+    var $stack_dev_message = array();
+    var $stack_status = array();
 
     public function  __construct($example, $additional_option_array)
     {
+        $this->stack_add('entering', __FILE__, __FUNCTION__, __LINE__);
         $this->example = $example;
         $this->option_array = $additional_option_array;
+        $this->stack_add('exiting', __FILE__, __FUNCTION__, __LINE__);
     }
 
     public function unpack()
     {
 
+        $this->stack_add('entering', __FILE__, __FUNCTION__, __LINE__);
         $dev = TRUE;
         // $dev = FALSE;
         $this->instantiate_example_object();
@@ -43,6 +49,7 @@ class php_coder_object
             $this->gather_output($dev);
             return;
         }
+        $this->stack_add('success', __FILE__, __FUNCTION__, __LINE__, 'About to call gather_output');
         $this->gather_output();
         // $this->gather_output($dev);//or implement --dev=1 option
         return;
@@ -50,6 +57,7 @@ class php_coder_object
 
     public function instantiate_example_object()
     {
+        $this->stack_add('entering', __FILE__, __FUNCTION__, __LINE__);
         $example = $this->example;
         if (empty($example)) {
             $example = 'hello';//more codey way to set default
@@ -68,10 +76,12 @@ class php_coder_object
                 $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
                 break;
         }
+        $this->stack_add('exiting', __FILE__, __FUNCTION__, __LINE__);
         return;
     }
     public function unpack_options()
     {
+        $this->stack_add('entering', __FILE__, __FUNCTION__, __LINE__);
         $option_array = $this->option_array;
 
 
@@ -99,10 +109,12 @@ class php_coder_object
         $this->option_rand = $option_rand;
         $this->option_dev = $option_dev;
 
+        $this->stack_add('exiting', __FILE__, __FUNCTION__, __LINE__);
     }
 
     public function unpack_example()
     {
+        $this->stack_add('entering', __FILE__, __FUNCTION__, __LINE__);
         $example = $this->example;
         if (empty($example)) {
             $example = 'EERROR';//this is an error
@@ -118,16 +130,20 @@ class php_coder_object
                 $this->output_message_type = __FUNCTION__ . ': ' . basename(__FILE__) . ' - line '. __LINE__;
                 break;
         }
+        $this->stack_add('exiting', __FILE__, __FUNCTION__, __LINE__);
         return;
     }
 
     public function validate_options()
     {
+        $this->stack_add('entering', __FILE__, __FUNCTION__, __LINE__);
+        $this->stack_add('exiting', __FILE__, __FUNCTION__, __LINE__);
         return;
     }
 
     public function gather_output ($dev = FALSE)
     {
+        $this->stack_add('entering', __FILE__, __FUNCTION__, __LINE__);
         $crlf = "\r\n"; //$this->crlf; // use ztring_replace() method of this gets too hairy
         $tab = "    "; //$this->tab;
         $space = " "; //$this->space;
@@ -159,7 +175,34 @@ class php_coder_object
         }
         // $this->output_string $prepend_output_string . $this->output_string . $postpend_output_string;
 
+        $this->stack_add('exiting', __FILE__, __FUNCTION__, __LINE__);//MOOT here in particular
         return;
+    }
+
+    public function stack_add($status = 'success', $file = '', $function = '', $line = '', $string = 'DDEFAULT',  $dev_string = 'DDEFAULT')
+    {
+        return;
+        $file = empty($file)?__FILE__:$file;
+        $file = basename($file);
+        $function = empty($function)?__FUNCTION__:$function;
+        $line = empty($line)?__LINE__:$line;
+        $string_status = 'NNULL';
+        $string_status = strtolower($status) == 'entering'?'ENTERING':$string_status;
+        $string_status = strtolower($status) == 'exiting'?'EXITING':$string_status;
+        #\_ others...
+        $status = $string_status == 'NNULL'?$status:'success';
+
+        if ($string == 'DDEFAULT') {
+            $supported_string_statuses = array('ENTERING', 'EXITING', );
+            $string = in_array($string_status, $supported_string_statuses)?ucfirst(strtolower($string_status)):'Stack called';
+            $string .= ' \'' . $function . '\' function on line ' . $line . ' of ' . $file . ' file.';
+        }
+        $dev_message = 'Line:' . $line . '; Function:' . $function . '; File:' . $file . ';';
+        $dev_message .= $dev_string == 'DDEFAULT'?'': "'" . $dev_string . "'";
+        $this->stack_message[] = $string;
+        $this->stack_dev_message[] = $dev_message;
+        $this->stack_status[] = $status;
+
     }
 
 } //END Class php_coder_object

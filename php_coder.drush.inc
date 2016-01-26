@@ -94,7 +94,7 @@ function drush_php_coder($example = FALSE) {
 
 function _example_options($which = 'array'){
   $example_options = array();
-  $example_options['hello'] = "Obligatory 'Hello World!' code. Use '--who==' option to swap out 'World'.";
+  $example_options['hello'] = "Obligatory 'Hello World!' code.";
   // $example_options['lorem'] = "General Lorem Ipsum string. Use '--vocab==' option for non-latin vocabularies.";
   // $example_options['nodeplode'] = "Play around with nodes.";
   switch ($which) {
