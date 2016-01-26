@@ -181,7 +181,6 @@ class php_coder_object
 
     public function stack_add($status = 'success', $file = '', $function = '', $line = '', $string = 'DDEFAULT',  $dev_string = 'DDEFAULT')
     {
-        return;
         $file = empty($file)?__FILE__:$file;
         $file = basename($file);
         $function = empty($function)?__FUNCTION__:$function;
