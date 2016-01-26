@@ -17,9 +17,9 @@ function php_coder_drush_command() {
       'dev' => "Allow for skipping over the 'clean' output in favor of 'dev' output as the code progresses. This may be removed or made more useful developers not coding this module.",
     ),
     'examples' => array(
-      'drush phpc --action=mask' => 'PENDING Prints the statement once with the error flag.',
-      'drush php_coder --limit=10' => 'PENDING Prints the statement 10 times with the success flag.',
-      'drush phpc --echo_options=10,27,125' => 'PENDING Prints the statement 10 times with the success flag.',
+      'drush php-coder' => 'Simply returns the obligatory Hello World string.',
+      'drush phpc' => 'Using the alias, returns the obligatory Hello World string.',
+      'drush php --dev=yes' => 'Returns the full php_coder object (including output string as Hello World).',
     ),
   );
 
@@ -45,20 +45,11 @@ function drush_php_coder($example = FALSE) {
       return;
     }
     $string = _example_options('string');
-    /**
-     * @circleback = how to escape quotes within dt?
-     * it's really wrong to circumvent dt() like this
-     */
     return drush_set_error(dt('"@type" is not a valid example. ',
       array('@type' => $example)) . $string);
   }
 
   // Option
-  // loop through array of supported options
-  /**
-   * @circleback can this be gathered from php_coder_drush_command()
-   */
-  // $example = $example;//KLUDGE
   $supported_option_array = array(
     'rand',
     'select',
@@ -83,13 +74,11 @@ function drush_php_coder($example = FALSE) {
     $additional_option_array[$key] = $$option;
   }
   /**
-   * @todo validate, unpack here? I think in object method
-   * @circleback remove application of empty $$option to $additional_option_array
+   * below shows how you could debug a really basic drush api problem
    */
   // drush_print($example);
   // return;
   _drush_execute_phpc($example, $additional_option_array);
-  // _drush_execute_phpc($example, $action);
 } //END function drush_php_coder($example = FALSE)
 
 function _example_options($which = 'array'){
