@@ -2,7 +2,7 @@ Outline of Live Demo Steps:
 
 Example Hello
 
-git checkout example_hello
+git checkout example_hello_simple
 \_ checout this example
 drush php-coder hello
 \_ simple successful run
@@ -16,3 +16,7 @@ drush php-coder
 drush phpc
 \_ select 1 works
 drush phpc --dev
+\_ this is the BIG one -- this is where you get into the code itself if there is interest
+
+NEXT!
+git checkout _example_hello
