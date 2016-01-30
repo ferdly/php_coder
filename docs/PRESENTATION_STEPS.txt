@@ -1,0 +1,18 @@
+Outline of Live Demo Steps:
+
+Example Hello
+
+git checkout example_hello
+\_ checout this example
+drush php-coder hello
+\_ simple successful run
+drush phpc hello
+\_ same thing showing the alias
+drush phpc manitowac
+\_ show custom error message for unsupported example argument
+  \_ indeed, it says not to supply an example -- just like 'drush cc'
+drush php-coder
+\_ select cancel 'Buh-Bye!' is custom
+drush phpc
+\_ select 1 works
+drush phpc --dev
