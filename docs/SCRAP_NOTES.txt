@@ -28,5 +28,7 @@ nodeplode
 --sort= supported sort criteria (title_asc, title_desc, nid_asc, nid_desc, rand, type[bundle]_asc, type[bundle]_desc)
 \_ default is nid_asc
 \_ Validate on count <= all nodes
-\_ maybe roll out a full-on thrown error mechanism, reading Schloossnagle
+\_ maybe roll out a full-on thrown error mechanism, reading
+
+LAST Version, 'example' becomes 'project', also php-coder can become a module TEMPLATE when you know you will want to drush component
 

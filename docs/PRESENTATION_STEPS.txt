@@ -2,17 +2,21 @@ Outline of Live Demo Steps:
 
 Example Hello
 
+From the hello_example_simple
+
 git checkout example_hello
 \_ checout this example
+
+All the same examples as before:
 drush php-coder hello
-\_ simple successful run
 drush phpc hello
-\_ same thing showing the alias
-drush phpc manitowac
-\_ show custom error message for unsupported example argument
-  \_ indeed, it says not to supply an example -- just like 'drush cc'
-drush php-coder
-\_ select cancel 'Buh-Bye!' is custom
-drush phpc
-\_ select 1 works
+drush phpc //wait for prompt
+
 drush phpc --dev
+\_ also will prompt
+\_ BUT! The dev output is easier (IMHO) to manage than devel modules dpm
+PAYOFF!
+ - adding a drush command component(even for non-drush module) is great coding option
+ - purposely NOT using Schlossnagle throw e error, but next I will
+   \_ here is more of a 'home-cooked' development error catching: see unpack()
+
