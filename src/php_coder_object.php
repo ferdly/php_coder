@@ -138,8 +138,11 @@ class php_coder_object
     {
         $this->stack_add('entering', __FILE__, __FUNCTION__, __LINE__);
         if ($this->option_select && $this->option_rand) {
-            # code...
+            $this->output_message = 'Select & Rand options are in conflict';//'';
+            $this->output_message_type = 'File: ' . basename(__FILE__) . '; Function: ' . __FUNCTION__ . '; Line: ' . __LINE__ . ';';
+            return;
         }
+
         $this->stack_add('exiting', __FILE__, __FUNCTION__, __LINE__);
         return;
     }
