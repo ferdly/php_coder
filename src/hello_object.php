@@ -68,6 +68,7 @@ class hello_object
         if (!is_array($this->greeting_array) || count($this->greeting_array) == 0) {
             $this->greeting_array['hello'] = 'Hello';
             $this->greeting_array['goodbye'] = 'Good-bye';
+            $this->greeting_array['hail'] = 'Hail';
         }
         $this->composition_key = empty($this->composition_key) ? 'hello':$this->composition_key; //encapsulated default being set
         $this->noun = empty($this->noun) ? 'World':$this->noun; //encapsulated default being set
@@ -122,11 +123,35 @@ class hello_object
             return $return_sentence;
         }
         $this->greeting = $this->greeting_array[$composition_key];
-        $this->noun = 'World';
-        $this->adjective = $this->composition_key == 'goodbye' ? 'Cruel' : $this->adjective;
+        $this->apply_composition_key();
+        // $this->noun = 'World';
+        // $this->adjective = $this->composition_key == 'goodbye' ? 'Cruel' : $this->adjective;
         $return_sentence = trim($this->greeting . ' ' . $this->adjective);
         $return_sentence = trim($return_sentence . ' ' . $this->noun) . $this->punctuation;
         $this->return_sentence = $return_sentence;
         return $return_sentence;
+    }
+    public function apply_composition_key(){
+        $composition_key = $this->composition_key;
+        /**
+         * noun
+         */
+        $this->noun = $composition_key == 'hail' ? 'Ceasar' : $this->noun;
+
+        /**
+         * adjective
+         */
+        $this->adjective = $composition_key == 'goodbye' ? 'Cruel' : $this->adjective;
+
+        /**
+         * punctuation
+         */
+        $holder = 'no punctuation changes thus far, but ready when they happen';
+
+        /**
+         * case
+         * no case changing is appropriate here since it doesn't comport with it being based on $composition_key
+         */
+
     }
 }
