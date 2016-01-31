@@ -5,11 +5,11 @@ class hello_object
     var $composition_key;
     var $supported_composition_key_array = array();
     var $greeting;
-    var $adjective = '';
+    var $adjective;
     var $noun;
-    var $punctuation = '!';
+    var $punctuation;
     var $unpacked = FALSE;
-    var $case = 'nochange';
+    var $case;
     var $option_array = array();
     var $return_sentence;
     var $force_return = FALSE;
@@ -23,7 +23,7 @@ class hello_object
         $dev = TRUE;
         // $dev = FALSE;
 
-        $this->unpack_greeting_array();
+        $this->unpack_attribute_defaults();
         if (1 == 2 && $this->output_message_type != 'success') {
             $this->gather_output($dev);
             return;
@@ -49,15 +49,33 @@ class hello_object
         return;
     }
 
-    public function unpack_greeting_array()
+    public function unpack_attribute_defaults()
     {
         /**
+         * do check for external overload, regarless of $unpacked still FALSE
+         *
          * encapsulated defaults
+         * * composition_key
+         * * greeting_array
+         *   \_ UNDECLARED ATTRIBUTE, not sure of Drupal Coding Standard here
+         * * supported_composition_key_array
+         * * noun
+         * * adjective
+         *   \_ NULL and otherwise Empty() indistinguishable from empty string, moot but comment to document it was considered
+         * * punctuation
+         * * case
          */
-        $this->greeting_array['hello'] = 'Hello';
-        $this->greeting_array['goodbye'] = 'Good-bye';
+        if (!is_array($this->greeting_array) || count($this->greeting_array) == 0) {
+            $this->greeting_array['hello'] = 'Hello';
+            $this->greeting_array['goodbye'] = 'Good-bye';
+        }
+        $this->composition_key = empty($this->composition_key) ? 'hello':$this->composition_key; //encapsulated default being set
+        $this->noun = empty($this->noun) ? 'World':$this->noun; //encapsulated default being set
+        $this->adjective = empty($this->adjective) ? '':$this->adjective; //encapsulated default being set
+        $this->punctuation = empty($this->punctuation) ? '!':$this->punctuation; //encapsulated default being set
+
         $this->supported_composition_key_array = array_keys($this->greeting_array);
-        $this->composition_key = 'hello'; //encapsulated default being set
+
     }
 
         public function unpack_options()
@@ -105,7 +123,7 @@ class hello_object
         }
         $this->greeting = $this->greeting_array[$composition_key];
         $this->noun = 'World';
-        $this->adjective = $this->composition_key == 'goodbye' ? 'Cruel' : '';
+        $this->adjective = $this->composition_key == 'goodbye' ? 'Cruel' : $this->adjective;
         $return_sentence = trim($this->greeting . ' ' . $this->adjective);
         $return_sentence = trim($return_sentence . ' ' . $this->noun) . $this->punctuation;
         $this->return_sentence = $return_sentence;
