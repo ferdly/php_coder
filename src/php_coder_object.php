@@ -137,6 +137,9 @@ class php_coder_object
     public function validate_options()
     {
         $this->stack_add('entering', __FILE__, __FUNCTION__, __LINE__);
+        if ($this->option_select && $this->option_rand) {
+            # code...
+        }
         $this->stack_add('exiting', __FILE__, __FUNCTION__, __LINE__);
         return;
     }

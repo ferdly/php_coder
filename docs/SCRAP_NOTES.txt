@@ -32,3 +32,5 @@ nodeplode
 
 LAST Version, 'example' becomes 'project', also php-coder can become a module TEMPLATE when you know you will want to drush component
 
+xDeBug! -> the initial thrust behind xdebug was all about executable code, not a debug mode of this or that IDE in debug mode. So think (try) to see how that may work.
+
