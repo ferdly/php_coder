@@ -12,18 +12,19 @@ drush php-coder hello
 drush phpc hello
 drush phpc //wait for prompt
 
-GO TO CODE!
-what we want to do is work with the '--select=' option
+GO TO CODE! (maybe slide)
+what we want to do is work with the '--select' option
 in php_coder_obejct, $option_select is either NULL, TRUE or FALSE
 however, we pass the $options_array to the hello_object as well
 even though we have already 'unpacked' and 'validated' select, rand, and dev in php_coder_object, that doesn't mean we can't ignore any of those in hello_object or extend to 'unpacking' and 'validating' additional options, or -- as we are now doing 'unpack' and 'validate' differently.
-Specifically "--select=":
+Specifically "--select":
 what we want is to gather TRUE or FALSE
 (same as php_coder_object
     specifically, FALSE and NULL are differentiated without a difference )
 additionally we want to accept any valid $composition_key. So that is in addition to existing True-False-Null.
 1. False-Null and 'hello' have no effect
 2. 'goodbye' (or any other extended options later) will simply run that option
+    \_ NOTE: no 'hail' in this branch
 3. True means that we need to code a New User Interface.
 
 So what do we do as Coders?
