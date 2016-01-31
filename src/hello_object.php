@@ -151,6 +151,7 @@ class hello_object
         /**
          * case
          * no case changing is appropriate here since it doesn't comport with it being based on $composition_key
+         * \_ it would need to be its own method, too much for demo
          */
 
     }
