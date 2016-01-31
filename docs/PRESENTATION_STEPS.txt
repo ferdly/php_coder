@@ -19,4 +19,4 @@ drush phpc --dev
 \_ this is the BIG one -- this is where you get into the code itself if there is interest
 
 NEXT!
-git checkout _example_hello
+git checkout _example_hello_select_debug
