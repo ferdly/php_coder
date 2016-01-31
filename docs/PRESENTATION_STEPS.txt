@@ -39,6 +39,7 @@ Now: Just Do It!
 phpc //Null
 phpc --select=no //False
 phpc --select=hello
+phpc --select=donkeykong //also Null, default since not True, False or in Greeting
 
 2. run...
 phpc --select=goodbye
