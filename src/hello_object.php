@@ -67,8 +67,11 @@ class hello_object
          */
         if (!is_array($this->greeting_array) || count($this->greeting_array) == 0) {
             $this->greeting_array['hello'] = 'Hello';
+            $this->greeting_select_array['hello'] = 'Select Hello';
             $this->greeting_array['goodbye'] = 'Good-bye';
+            $this->greeting_select_array['goodbye'] = 'Select Good-bye';
             $this->greeting_array['hail'] = 'Hail';
+            $this->greeting_select_array['hail'] = 'Select Hail';
         }
         $this->composition_key = empty($this->composition_key) ? 'hello':$this->composition_key; //encapsulated default being set
         $this->noun = empty($this->noun) ? 'World':$this->noun; //encapsulated default being set
@@ -113,15 +116,14 @@ class hello_object
         if ($this->unpacked !== TRUE) {
             $this->unpack();
         }
+        $this->apply_option_rand();
         $composition_key = $this->composition_key;
         $composition_key = in_array($this->option_select, $this->supported_composition_key_array)?$this->option_select:$composition_key;
-        $this->composition_key = $composition_key;
         if ($this->option_select === true) {
-            $dev_output = 'File: ' . basename(__FILE__) . '; Function: ' . __FUNCTION__ . '; Line: ' . __LINE__ . ';';
-            $return_sentence = 'SELECT OPTION HERE ' . $dev_output;
-            $this->return_sentence = $return_sentence;
-            return $return_sentence;
+            $composition_key = $this->select_composition_key();
         }
+        #\_ option_select in_array and === true are mutually exclusive, so okay
+        $this->composition_key = $composition_key;
         $this->greeting = $this->greeting_array[$composition_key];
         $this->apply_composition_key();
         // $this->noun = 'World';
@@ -132,6 +134,9 @@ class hello_object
         return $return_sentence;
     }
     public function apply_composition_key(){
+        if ($this->rand) {
+            return;
+        }
         $composition_key = $this->composition_key;
         /**
          * noun
@@ -153,6 +158,45 @@ class hello_object
          * no case changing is appropriate here since it doesn't comport with it being based on $composition_key
          * \_ it would need to be its own method, too much for demo
          */
+    }
 
+    public function apply_option_rand() {
+        if (!$this->option_rand) {
+            return; //no change
+        }
+        /**
+         * pretty easy to (properly) place in unpack_atttributes() method, but...
+         * * \_ also would allow overload, but...
+         */
+
+        $greeting_array = array_flip($this->greeting_array);
+        shuffle($greeting_array);
+        $this->composition_key = array_shift($greeting_array);
+        $noun_array = array('World','Ceasar');
+        shuffle($noun_array);
+        $this->noun = array_shift($noun_array);
+        $adjective_array = array('zEMPTYz','Cruel');
+        shuffle($adjective_array);
+        $this->adjective = array_shift($adjective_array);
+        $this->adjective = str_replace('zEMPTYz', '', $this->adjective);
+        $punctuation_array = array('!','.','?');
+        shuffle($punctuation_array);
+        $this->punctuation = array_shift($punctuation_array);
+
+        // $this->noun = array_shift(shuffle(array('World','Ceasar')));
+        // $this->adjective = array_shift(shuffle(array('','Cruel')));
+        // $this->punctuation = array_shift(shuffle(array('!','.','?')));
+        return;
+    }
+
+    public function select_composition_key() {
+        $prompt = "Select which 'hello example' Sentence to return.";
+        // $composition_key = 'hail';
+        $composition_key = drush_choice($this->greeting_select_array, $prompt);
+        if (!in_array($composition_key, $this->supported_composition_key_array)) {
+            $composition_key = 'hello'; //no thrown error, just revert to default
+        }
+        $this->composition_key = $composition_key;
+        return $composition_key;
     }
 }

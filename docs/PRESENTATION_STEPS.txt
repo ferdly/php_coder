@@ -2,54 +2,15 @@ Outline of Live Demo Steps:
 
 Example Hello
 
-From the hello_example_simple
+From the hello_example_select_debug
 
-git checkout example_hello_select_debug
+git checkout example_hello
 \_ checout this example
 
 All the same examples as before:
 drush php-coder hello
 drush phpc hello
 drush phpc //wait for prompt
-
-GO TO CODE!
-what we want to do is work with the '--select=' option
-in php_coder_obejct, $option_select is either NULL, TRUE or FALSE
-however, we pass the $options_array to the hello_object as well
-even though we have already 'unpacked' and 'validated' select, rand, and dev in php_coder_object, that doesn't mean we can't ignore any of those in hello_object or extend to 'unpacking' and 'validating' additional options, or -- as we are now doing 'unpack' and 'validate' differently.
-Specifically "--select=":
-what we want is to gather TRUE or FALSE
-(same as php_coder_object
-    specifically, FALSE and NULL are differentiated without a difference )
-additionally we want to accept any valid $composition_key. So that is in addition to existing True-False-Null.
-1. False-Null and 'hello' have no effect
-2. 'goodbye' (or any other extended options later) will simply run that option
-3. True means that we need to code a New User Interface.
-
-So what do we do as Coders?
-There are no rules, here's what I've done
-1. TEST our presumption that False-Null and 'hello' have no effect
-    \_ pretty certain this is the case, but test anyway because coding changes of    any kind can result in bugs
-2. TEST that our new code takes care of 'goodbye'
-3. Save that for later
-    \_ Not sure how to do a drush select (even though we have, but following tutorial). But I want to test that we "Get There" properly. So you do that by not writing ALL the code at once, but write enough so that you can "encapsulate" that new part either 'officially' (its own method) or unofficially (you will put it in procedurally, but you can test now that it is everything else is working).
-
-Now: Just Do It!
-1. run...
-phpc //Null
-phpc --select=no //False
-phpc --select=hello
-
-2. run...
-phpc --select=goodbye
-
-3. run...
-phpc --select=yes
-
-QUESTIONS:
-Here __OR__ Next (fully working 'hello_example' branch)
-- Show --select=yes and rand=yes validation?
--
 
 
 drush phpc --dev
