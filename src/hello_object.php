@@ -121,6 +121,9 @@ class hello_object
         $composition_key = in_array($this->option_select, $this->supported_composition_key_array)?$this->option_select:$composition_key;
         if ($this->option_select === true) {
             $composition_key = $this->select_composition_key();
+            if (!empty($this->return_sentence)) {
+                return $this->return_sentence;
+            }
         }
         #\_ option_select in_array and === true are mutually exclusive, so okay
         $this->composition_key = $composition_key;
@@ -193,6 +196,10 @@ class hello_object
         $prompt = "Select which 'hello example' Sentence to return.";
         // $composition_key = 'hail';
         $composition_key = drush_choice($this->greeting_select_array, $prompt);
+        if ($composition_key == '0') {
+            $this->return_sentence = 'You do not get your deposit back upon cancellation.';
+            return;
+        }
         if (!in_array($composition_key, $this->supported_composition_key_array)) {
             $composition_key = 'hello'; //no thrown error, just revert to default
         }
